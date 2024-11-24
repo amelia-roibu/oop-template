@@ -63,3 +63,60 @@ Nerespectarea duce la nepunctarea proiectului
    - [ ] utilizarea a unui algoritm cu funcție lambda (de exemplu, sort, transform)
  - Design Patterns (0.5p)
    - [ ] utilizarea a două șabloane de proiectare
+
+## Instrucțiuni de compilare
+
+Proiectul este configurat cu CMake.
+
+Instrucțiuni pentru terminal:
+
+0. Biblioteci necesare pe Linux (presupunem sistem de operare bazat pe Debian)
+```sh
+sudo apt-get update && \
+  sudo apt-get install libxrandr-dev \
+    libxcursor-dev \
+    libudev-dev \
+    libopenal-dev \
+    libflac-dev \
+    libvorbis-dev \
+    libgl1-mesa-dev \
+    libegl1-mesa-dev \
+    libdrm-dev \
+    libgbm-dev \
+    libfreetype6-dev
+```
+
+Dacă lipsesc și alte biblioteci, ștergeți folder-ul de build de la pasul 1 și reconfigurați proiectul după ce ați instalat ce lipsea.
+
+1. Pasul de configurare
+```sh
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug
+```
+
+Sau pe Windows cu GCC:
+```sh
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -G Ninja
+```
+
+La acest pas putem cere să generăm fișiere de proiect pentru diverse medii de lucru.
+
+
+2. Pasul de compilare
+```sh
+cmake --build build --config Debug --parallel 6
+```
+
+Cu opțiunea `parallel` specificăm numărul de fișiere compilate în paralel.
+
+3. Pasul de instalare (opțional)
+```sh
+cmake --install build --config Debug --prefix install_dir
+```
+
+Vezi și [`scripts/cmake.sh`](scripts/cmake.sh).
+
+## Resurse
+
+- [SFML](https://github.com/SFML/SFML/tree/2.6.1) (Zlib)
+  - [OpenAL](https://openal-soft.org/) (LGPL): din cauza licenței, trebuie distribuită ca shared library
+- adăugați trimiteri către resursele externe care v-au ajutat sau pe care le-ați folosit

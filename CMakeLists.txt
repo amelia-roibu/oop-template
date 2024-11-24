@@ -102,8 +102,8 @@ include(cmake/Options.cmake)
 # external dependencies with FetchContent
 include(FetchContent)
 #
-# set(FETCHCONTENT_QUIET OFF)
-# set(FETCHCONTENT_UPDATES_DISCONNECTED ON)
+set(FETCHCONTENT_QUIET OFF)
+set(FETCHCONTENT_UPDATES_DISCONNECTED ON)
 #
 # NOTE: Also update env vars used for caching in
 #         - .github/actions/configure-cmake/action.yml
@@ -114,18 +114,41 @@ include(FetchContent)
  )
 #
 FetchContent_MakeAvailable(googletest)
+# din cauza SFML
+set(WARNINGS_AS_ERRORS OFF)
+
+# NOTE: Also update SFML_VERSION env var in .github/workflows/cmake.yml:84
+FetchContent_Declare(
+    SFML
+    GIT_REPOSITORY https://github.com/SFML/SFML.git
+    GIT_TAG        2.6.1
+    # GIT_TAG        69ea0cd863aed1d4092b970b676924a716ff718b # 2.6.1
+    # GIT_TAG        origin/master
+    GIT_SHALLOW    1  # works only with branches or tags, not with arbitrary commit hashes
+)
+
+FetchContent_MakeAvailable(SFML)
 
 ###############################################################################
 
 # external dependencies with find_package
 
-# find_package(Threads REQUIRED)
+find_package(Threads REQUIRED)
+if(APPLE)
+elseif(UNIX)
+    find_package(X11)
+endif()
 
 ###############################################################################
 
 # NOTE: update executable name in .github/workflows/cmake.yml:25 when changing name here
-add_executable(${PROJECT_NAME} main.cpp ${SOURCES})
+add_executable(${PROJECT_NAME}
+    main.cpp
+    ${SOURCES}
+    env_fixes.h
+)
 
+include(cmake/CompilerFlags.cmake)
 ###############################################################################
 
 # target definitions
@@ -160,9 +183,14 @@ set_custom_stdlib_and_sanitizers(${PROJECT_NAME} true)
 include(cmake/CompilerFlags.cmake)
 ###############################################################################
 # target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ext/<SomeHppLib>/include)
-# target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ${<SomeLib>_SOURCE_DIR}/include)
-# target_link_directories(${PROJECT_NAME} PRIVATE ${<SomeLib>_BINARY_DIR}/lib)
-# target_link_libraries(${PROJECT_NAME} <SomeLib>)
+target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ${SFML_SOURCE_DIR}/include)
+target_link_directories(${PROJECT_NAME} PRIVATE ${SFML_BINARY_DIR}/lib)
+target_link_libraries(${PROJECT_NAME} PRIVATE sfml-graphics sfml-window sfml-system Threads::Threads)
+
+if(APPLE)
+elseif(UNIX)
+    target_link_libraries(${PROJECT_NAME} PRIVATE X11)
+endif()
 
 ###############################################################################
 
@@ -193,5 +221,19 @@ gtest_discover_tests(test_oop)
 
 #include(cmake/CopyHelper.cmake) #TODO
 #copy_files(FILES tastatura.txt) #TODO
+# copy dependent DLLs to build dir
+# see https://en.sfml-dev.org/forums/index.php?topic=28580.0
+# remove this if not using audio or if using SFML 3
+if (WIN32 AND SFML_BUILD_AUDIO)
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+      COMMAND ${CMAKE_COMMAND} -E copy_if_different
+         ${SFML_SOURCE_DIR}/extlibs/bin/x64/openal32.dll
+         $<TARGET_FILE_DIR:${PROJECT_NAME}>
+    )
+endif()
+
+
+include(cmake/CopyHelper.cmake)
+copy_files(FILES tastatura.txt)
 # copy_files(FILES tastatura.txt config.json DIRECTORY images sounds)
 # copy_files(DIRECTORY images sounds)
