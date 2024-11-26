@@ -102,9 +102,6 @@ include(cmake/Options.cmake)
 # external dependencies with FetchContent
 include(FetchContent)
 #
-set(FETCHCONTENT_QUIET OFF)
-set(FETCHCONTENT_UPDATES_DISCONNECTED ON)
-#
 # NOTE: Also update env vars used for caching in
 #         - .github/actions/configure-cmake/action.yml
 #         - .github/workflows/cmake.yml
