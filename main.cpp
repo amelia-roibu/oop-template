@@ -39,7 +39,7 @@ public:
                 path.append("fonts");
                 break;
         }
-        return path.append(resource);
+        return path.append(resource).string();
     }
 };
 
