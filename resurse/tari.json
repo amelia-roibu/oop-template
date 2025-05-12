@@ -1,0 +1,26 @@
+{
+  "Romania": {
+    "continent": "Europa",
+    "capitala": "Bucuresti",
+    "emisfera": "Nordica",
+    "suprafata": 238397,
+    "vecini": {
+      "Nord": ["Ucraina"],
+      "Sud": ["Bulgaria"],
+      "Est": ["Moldova"],
+      "Vest": ["Ungaria", "Serbia"]
+    }
+  },
+  "Franta": {
+    "continent": "Europa",
+    "capitala": "Paris",
+    "emisfera": "Nordica",
+    "suprafata": 551695,
+    "vecini": {
+      "Nord": [],
+      "Sud": ["Spania"],
+      "Est": ["Germania", "Elvetia"],
+      "Vest": []
+    }
+  }
+}

@@ -163,9 +163,9 @@ endif()
 #enable_testing()
 #
 add_executable(proiectPOO
-        main.cpp
-        ../src/tari.cpp
-        ../src/tariGlobal.cpp
+        test/main.cpp
+        src/tari.cpp
+        src/tariGlobal.cpp
 )
 #
 #target_link_libraries(
