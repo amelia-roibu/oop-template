@@ -160,12 +160,11 @@ endif()
 ###############################################################################
 #enable_testing()
 #
-#add_executable(
-#        test_oop
-#        ${HEADERS}
-#        ${TESTS}
-#        ${SOURCES}
-#)
+add_executable(proiectPOO
+        main.cpp
+        ../src/tari.cpp
+        ../src/tariGlobal.cpp
+)
 #
 #target_link_libraries(
 #        test_oop
